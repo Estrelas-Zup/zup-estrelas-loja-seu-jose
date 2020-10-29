@@ -1,4 +1,4 @@
-package br.com.zup.estrelas.seujose.controller.venda;
+package br.com.zup.estrelas.seujose.controller;
 
 import java.io.IOException;
 import java.util.Optional;
