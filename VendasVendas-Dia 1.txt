@@ -1,0 +1,2 @@
+Código: 222		Nome: Tapete Azul		Quantidade: 4		Valor: 241.2
+Código: 111		Nome: Tapete Vermelho		Quantidade: 4		Valor: 235.2

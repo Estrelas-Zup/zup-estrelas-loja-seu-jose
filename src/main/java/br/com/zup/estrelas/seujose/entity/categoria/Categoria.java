@@ -2,7 +2,7 @@ package br.com.zup.estrelas.seujose.entity.categoria;
 
 public enum Categoria {
 
-      MOTOR("Motor"), SUSPENÇÂO("Suspenção"), DIREÇÂO("Direção"), TRANSMIÇÂO("Transmissão"), FUNILARIA("Funilaria"),
+      MOTOR("Motor"), SUSPENCAO("Suspenção"), DIRECAO("Direção"), TRANSMICAO("Transmissão"), FUNILARIA("Funilaria"),
       OUTROS("Outros");
 
       private String value;

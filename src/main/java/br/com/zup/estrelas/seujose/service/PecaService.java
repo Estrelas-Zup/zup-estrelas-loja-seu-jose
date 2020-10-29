@@ -14,12 +14,13 @@ import br.com.zup.estrelas.seujose.repository.PecaRepository;
 @Service
 public class PecaService {
 
-      private static final String PECA_JA_EXISTENTE = "ESSA PEÇA JÁ EXISTE NO BANCO DE DADOS!";
+      private static final String PECA_JA_EXISTENTE = "JÁ EXISTE NO BANCO DE DADOS UMA PEÇA COM ESSE CÓDIGO DE BARRAS!";
       private static final String PECA_ADICIONADA_COM_SUCESSO = "A PEÇA FOI ADICIONADA COM SUCESSO NO BANCO DE DADOS!";
       private static final String PECA_REMOVIDA_COM_SUCESSO = "PEÇA REMOVIDA COM SUCESSO!";
       private static final String PECA_NÃO_ENCONTRADA = "PEÇA NÃO ENCONTRADA PELO CODIGO DE BARRAS!";
       private static final String PECA_ALTERADA_COM_SUCESSO = "PEÇA ALTERADA COM SUCESSO!";
       private static final String PECA_NÃO_ALTERADA = "PEÇA NÃO ENCONTRADA PARA FAZER A ALTERAÇÂO!";
+      
 
       @Autowired
       PecaRepository repository;
