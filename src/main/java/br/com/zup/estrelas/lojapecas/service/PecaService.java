@@ -34,7 +34,7 @@ public class PecaService implements IPecaService {
     }
 
     public Peca buscaPeca(Long codBarras) {
-        return pecaRepository.findById(codBarras).get();
+        return pecaRepository.findById(codBarras).orElse(null);
     }
 
     public List<Peca> listaPecas() {
