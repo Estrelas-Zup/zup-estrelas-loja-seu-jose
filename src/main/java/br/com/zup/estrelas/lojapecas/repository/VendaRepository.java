@@ -8,4 +8,5 @@ import br.com.zup.estrelas.lojapecas.entity.Venda;
 @Repository
 public interface VendaRepository extends CrudRepository<Venda, Long> {
 
+
 }
