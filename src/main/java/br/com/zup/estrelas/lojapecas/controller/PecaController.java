@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.zup.estrelas.lojapecas.dto.AlteraPecaDTO;
 import br.com.zup.estrelas.lojapecas.dto.MensagemDTO;
 import br.com.zup.estrelas.lojapecas.entity.Peca;
 import br.com.zup.estrelas.lojapecas.service.IPecaService;
@@ -21,42 +20,46 @@ import br.com.zup.estrelas.lojapecas.service.IPecaService;
 @RestController
 @RequestMapping("/pecas")
 public class PecaController {
+	@Autowired
+	IPecaService pecaService;
 
-    // POST
-    // GET -: Busca
-    // GET -: Listagem
-    // DELETE
-    // PUT
-    @Autowired
-    IPecaService pecaService;
+	@PostMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
+	public MensagemDTO adicionaPeca(@RequestBody Peca peca) {
+		return pecaService.adicionaPeca(peca);
+	}
 
-    @PostMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
-    public MensagemDTO adicionaPeca(@RequestBody Peca peca) {
-        return pecaService.adicionaPeca(peca);
-    }
+	@DeleteMapping(path = "/{codigoBarra}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public MensagemDTO removePeca(@PathVariable Long codigoBarra) {
+		return pecaService.removePeca(codigoBarra);
+	}
 
-    // host:8080/pecas/12345 -> variável
-    @GetMapping(path = "/{codBarras}", produces = { MediaType.APPLICATION_JSON_VALUE })
-    public Peca buscaPeca(@PathVariable Long codBarras) {
-        return pecaService.buscaPeca(codBarras);
-    }
+	@PutMapping(path = "/{codigoBarra}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public MensagemDTO alteraPeca(@PathVariable Long codigoBarra, @RequestBody Peca peca) {
+		return pecaService.alteraPeca(codigoBarra, peca);
+	}
 
-    // host:8080/pecas
-    @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
-    public List<Peca> listaPecas() {
-        return pecaService.listaPecas();
-    }
+	@GetMapping(path = "/{codigoBarra}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public Peca buscaPeca(@PathVariable Long codigoBarra) {
+		return pecaService.buscaPeca(codigoBarra);
+	}
 
-    // host:8080/pecas/12345 -> DELETE
-    @DeleteMapping(path = "/{codBarras}", produces = { MediaType.APPLICATION_JSON_VALUE })
-    public MensagemDTO removePeca(@PathVariable Long codBarras) {
-        return pecaService.removePeca(codBarras);
-    }
+	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<Peca> listaPeca() {
+		return pecaService.listarPecas();
+	}
 
-    // host:8080/pecas/12345 -> PUT
-    @PutMapping(path = "/{codBarras}", produces = { MediaType.APPLICATION_JSON_VALUE })
-    public MensagemDTO alteraPeca(@PathVariable Long codBarras, @RequestBody AlteraPecaDTO peca) {
-        return pecaService.alteraPeca(codBarras, peca);
-    }
+	@GetMapping(path = "/nome/{nome}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<Peca> buscaPecaPorNome(@PathVariable String nome) {
+		return pecaService.buscarPecaPorNome(nome);
+	}
 
+	@GetMapping(path = "/modelo/{modelo}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<Peca> buscaPecaPorModelo(@PathVariable String modelo) {
+		return pecaService.buscarPecaPorModelo(modelo);
+	}
+
+	@GetMapping(path = "/categoria/{categoria}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<Peca> buscaPecaPorCategoria(@PathVariable String categoria) {
+		return pecaService.buscarPecaPorCategoria(categoria);
+	}
 }

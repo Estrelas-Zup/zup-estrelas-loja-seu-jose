@@ -9,5 +9,4 @@ public class ZupEstrelasLojaSeuJoseApplication {
     public static void main(String[] args) {
         SpringApplication.run(ZupEstrelasLojaSeuJoseApplication.class, args);
     }
-
 }

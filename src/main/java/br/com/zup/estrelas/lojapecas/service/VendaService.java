@@ -1,134 +1,126 @@
 package br.com.zup.estrelas.lojapecas.service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.zup.estrelas.lojapecas.dao.VendaDAO;
-import br.com.zup.estrelas.lojapecas.dto.AlteraPecaDTO;
 import br.com.zup.estrelas.lojapecas.dto.MensagemDTO;
 import br.com.zup.estrelas.lojapecas.dto.VendaDTO;
-import br.com.zup.estrelas.lojapecas.dto.VendaRelatorioDTO;
 import br.com.zup.estrelas.lojapecas.entity.Peca;
+import br.com.zup.estrelas.lojapecas.entity.Venda;
+import br.com.zup.estrelas.lojapecas.repository.VendaRepository;
 
 @Service
 public class VendaService implements IVendaService {
+	private static final String NOME_PASTA_VENDAS = "VendasLojaSeuJose";
+	private static final String QUANTIDADE_EM_ESTOQUE_INSUFICIENTE = ("Quantidade em estoque insuficiente");
+	private static final String PEÇA_INEXISTENTE = ("Peça inexistente");
+	private static final String VENDA_REALIZADA_SUCESSO = ("Venda realizada com sucesso");
 
-    @Autowired
-    VendaDAO vendaDao;
+	@Autowired
+	PecaService pecaService;
 
-    @Autowired
-    PecaService pecaService;
+	@Autowired
+	VendaRepository repository;
 
-    @Override
-    public MensagemDTO realizaVenda(VendaDTO venda) {
+	public MensagemDTO realizaVenda(VendaDTO vendaDTO) {
+		Optional<Peca> pecaOptional = pecaService.repository.findById(vendaDTO.getCodigoBarra());
 
-        Peca peca = pecaService.buscaPeca(venda.getCodBarras());
+		Optional<String> mensagemInvalida = this.validaPeca(pecaOptional, vendaDTO);
 
-        Optional<String> mensagemInvalida = this.validaVenda(peca, venda);
-        if (mensagemInvalida.isPresent()) {
-            return new MensagemDTO(mensagemInvalida.get());
-        }
+		if (mensagemInvalida.isPresent()) {
+			return new MensagemDTO(mensagemInvalida.get());
+		}
 
-        // Guardar na lista de vendas
-        this.armazenaVenda(peca, venda);
-        // Alterar a peça no BD
-        this.alteraEstoque(peca, venda);
-        // Verificar se a peça existe
+		alteraQuantidadeEstoquePeca(pecaOptional.get(), vendaDTO.getQuantidade());
 
-        return new MensagemDTO("Venda realizada com sucesso.");
-    }
+		repository.save(montarObjetoVenda(pecaOptional.get(), vendaDTO.getQuantidade()));
 
-    @Override
-    public MensagemDTO geraRelatorio() {
+		return new MensagemDTO(VENDA_REALIZADA_SUCESSO);
+	}
 
-        File diretorio = this.criaDiretorio();
+	public void alteraQuantidadeEstoquePeca(Peca peca, int quantidade) {
+		peca.setQuantidadeEstoque(peca.getQuantidadeEstoque() - quantidade);
+		pecaService.alteraPeca(peca.getCodigoBarra(), peca);
+	}
 
-        int numeroArquivos = diretorio.listFiles().length + 1;
-        FileWriter arquivoRelatorio;
+	public Venda montarObjetoVenda(Peca peca, int quantidade) {
+		Venda venda = new Venda();
 
-        try {
-            String caminhoArquivo = diretorio.getPath() + "/relatorio_" + numeroArquivos + ".txt";
-            arquivoRelatorio = new FileWriter(caminhoArquivo);
-            arquivoRelatorio.append(String.format("Código\tNome\tQuantidade\tValor"));
+		venda.setPrecoUnitario(peca.getPrecoVenda());
+		venda.setQuantidade(quantidade);
+		venda.setPrecoTotalVenda(quantidade * peca.getPrecoVenda());
+		venda.setDataVenda(LocalDate.now());
+		venda.setPeca(peca);
 
-            List<VendaRelatorioDTO> relatorioDia = vendaDao.getVendas();
+		return venda;
+	}
 
-            Double valorTotal = (double) 0;
-            for (VendaRelatorioDTO venda : relatorioDia) {
-                arquivoRelatorio.append(String.format("\n%d\t%s\t%d\t%.2f", venda.getCodBarras(), venda.getNome(),
-                        venda.getQuantidade(), venda.getValor()));
-                valorTotal += venda.getValor();
-            }
+	public Optional<String> validaPeca(Optional<Peca> pecaOptional, VendaDTO vendaDTO) {
+		if (pecaOptional.isEmpty()) {
+			return Optional.of(PEÇA_INEXISTENTE);
+		}
 
-            arquivoRelatorio.append(String.format("\n\t\t\t Valor Total: %.2f", valorTotal));
-            arquivoRelatorio.close();
+		boolean quantidadeDisponivelEstoque = pecaOptional.get().getQuantidadeEstoque() < vendaDTO.getQuantidade();
+		if (quantidadeDisponivelEstoque) {
+			return Optional.of(QUANTIDADE_EM_ESTOQUE_INSUFICIENTE);
+		}
 
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-            return new MensagemDTO("Erro ao processar arquivo.");
-        }
-//        Caso queira usar a data:
-//        StringBuilder dataNomeArquivo = new StringBuilder();
-//        dataNomeArquivo.append(LocalDate.now().getDayOfMonth());
-//        dataNomeArquivo.append("_");
-//        dataNomeArquivo.append(LocalDate.now().getMonthValue() + 1);
-//        String dataIdentificadorArquivo = dataNomeArquivo.toString();
+		return Optional.empty();
+	}
 
-        return new MensagemDTO("Relatório gerado com sucesso :)");
-    }
+	public List<Venda> buscaVendasRealizadas() {
+		return (List<Venda>) repository.findAll();
+	}
 
-    @Override
-    public List<VendaRelatorioDTO> listaVendas() {
-        return this.vendaDao.getVendas();
-    }
+	public List<Venda> buscaVendasPorData(LocalDate dataVenda) {
+		return repository.findByDataVenda(dataVenda);
+	}
 
-    private Optional<String> validaVenda(Peca peca, VendaDTO venda) {
-        if (Objects.isNull(peca)) {
-            return Optional.of("Peça inexistente");
-        }
-        // Validar se tem a quantidade em estoque
-        boolean qtdVendaMenorEstoque = peca.getQtdEstoque() < venda.getQuantidade();
-        if (qtdVendaMenorEstoque) {
-            return Optional.of("Quantidade inválida");
-        }
+	public List<Venda> buscaVendasPorAno(LocalDate dataAnoInicio, LocalDate dataAnoFim) {
+		return repository.findByDataVendaBetween(dataAnoInicio, dataAnoFim);
+	}
 
-        return Optional.empty();
-    }
+	public MensagemDTO gerarRelatorio() {
+		File file = new File(NOME_PASTA_VENDAS);
 
-    private void armazenaVenda(Peca peca, VendaDTO venda) {
-        VendaRelatorioDTO vendaRelatorio = new VendaRelatorioDTO();
-        vendaRelatorio.setCodBarras(venda.getCodBarras());
-        vendaRelatorio.setNome(peca.getNome());
-        vendaRelatorio.setQuantidade(venda.getQuantidade());
+		if (!file.exists()) {
+			file.mkdir();
+		}
 
-        Double valorVenda = venda.getQuantidade() * peca.getPrecoVenda();
-        vendaRelatorio.setValor(valorVenda);
-        vendaDao.insereVenda(vendaRelatorio);
-    }
+		String nomeArquivoRelatorio = "/relatorio_" + file.listFiles().length + ".txt";
+		String caminhoArquivo = NOME_PASTA_VENDAS + nomeArquivoRelatorio;
+		
+		try {
+			FileWriter writer = new FileWriter(caminhoArquivo);
+			writer.append(String.format("Código |\t Nome |\t Data venda | Quantidade |\t Preço unitario | Preço total\n\n"));
+			List<Venda> vendasRealizadas = buscaVendasRealizadas();
 
-    private void alteraEstoque(Peca peca, VendaDTO venda) {
-        int novaQtdPecas = peca.getQtdEstoque() - venda.getQuantidade();
-        AlteraPecaDTO pecaAlterada = new AlteraPecaDTO();
-        BeanUtils.copyProperties(peca, pecaAlterada);
-        pecaAlterada.setQtdEstoque(novaQtdPecas);
-        pecaService.alteraPeca(peca.getCodBarras(), pecaAlterada);
-    }
+			double precoTotalVendas = 0;
+			
+			for (Venda venda : vendasRealizadas) {				
+				writer.append(String.format("\n%d\t %s\t %s\t %d\t\t R$%.2f\t R$%.2f", venda.getPeca().getCodigoBarra(), venda.getPeca().getNome(),
+						venda.getDataVenda(), venda.getQuantidade(), venda.getPrecoUnitario(), venda.getPrecoTotalVenda()));
+				
+				precoTotalVendas += venda.getPrecoTotalVenda();
+			}
+			
+			writer.append(String.format("\n\n\nVALOR TOTAL VENDAS: R$%.2f", precoTotalVendas));
+			writer.close();
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			return new MensagemDTO("Erro ao armazenar arquivo");
+		}
 
-    private File criaDiretorio() {
-
-        File diretorio = new File("relatorios");
-        if (!diretorio.exists()) {
-            diretorio.mkdir();
-        }
-
-        return diretorio;
-    }
+		return new MensagemDTO("Relatorio gerado com sucesso!");
+	}
 }

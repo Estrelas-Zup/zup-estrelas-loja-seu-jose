@@ -1,25 +1,10 @@
 package br.com.zup.estrelas.lojapecas.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class VendaDTO {
-
-    private long codBarras;
-
-    private int quantidade;
-
-    public long getCodBarras() {
-        return codBarras;
-    }
-
-    public void setCodBarras(long codBarras) {
-        this.codBarras = codBarras;
-    }
-
-    public int getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
-    }
-
+	private Long codigoBarra;
+	private int quantidade;
 }

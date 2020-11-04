@@ -10,69 +10,31 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Table(name = "venda")
+@Getter @Setter
 public class Venda {
-
-    @Id
-    @Column(name = "id_venda")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
-    private Integer quantidade;
-
-    @ManyToOne
-    @JoinColumn(name = "cod_barras", foreignKey=@ForeignKey(name="FK_GABRIEL"))
-    private Peca peca;
-
-    @Column(nullable = false)
-    private Double valor;
-
-    @Column(nullable = false, name = "data_venda")
-    private LocalDate dataVenda;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(Integer quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public Peca getPeca() {
-        return peca;
-    }
-
-    public void setPeca(Peca peca) {
-        this.peca = peca;
-    }
-
-    public Double getValor() {
-        return valor;
-    }
-
-    public void setValor(Double valor) {
-        this.valor = valor;
-    }
-
-    public LocalDate getDataVenda() {
-        return dataVenda;
-    }
-
-    public void setDataVenda(LocalDate dataVenda) {
-        this.dataVenda = dataVenda;
-    }
-
-    
+	@Id
+	@Column(name = "id_venda")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
+	@ManyToOne
+	@JoinColumn(name = "codigo_de_barra", foreignKey=@ForeignKey(name="FK_CODIGO_DE_BARRAS"), nullable = false)
+	private Peca peca;
+	
+	@Column(nullable = false, columnDefinition = "int default 0")
+	private int quantidade;
+	
+	@Column(name = "preco_unitario", nullable = false)
+	private double precoUnitario;
+	
+	@Column(name = "preco_total_venda", nullable = false)
+	private double precoTotalVenda;
+	
+	@Column(name = "data_venda", nullable = false)
+	private LocalDate dataVenda;
 }

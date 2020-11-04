@@ -1,0 +1,8 @@
+Código |	 Nome |	 Data venda | Quantidade |	 Preço unitario | Preço total
+
+
+1	 Filtro de ar	 2020-11-04	 1		 R$50,00	 R$50,00
+1	 Filtro de ar	 2020-11-04	 1		 R$50,00	 R$50,00
+
+
+VALOR TOTAL VENDAS: R$100,00
