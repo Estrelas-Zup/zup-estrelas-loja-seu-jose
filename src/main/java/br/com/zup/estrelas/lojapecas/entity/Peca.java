@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import br.com.zup.estrelas.lojapecas.enums.Categoria;
 
 @Entity
-@Table(name = "peca")
+@Table(name = "pecas")
 public class Peca {
 
     @Id

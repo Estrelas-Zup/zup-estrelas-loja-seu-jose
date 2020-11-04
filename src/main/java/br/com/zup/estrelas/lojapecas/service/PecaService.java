@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import br.com.zup.estrelas.lojapecas.dto.AlteraPecaDTO;
 import br.com.zup.estrelas.lojapecas.dto.MensagemDTO;
 import br.com.zup.estrelas.lojapecas.entity.Peca;
+import br.com.zup.estrelas.lojapecas.enums.Categoria;
 import br.com.zup.estrelas.lojapecas.repository.PecaRepository;
 
 @Service
@@ -25,7 +26,8 @@ public class PecaService implements IPecaService {
 
     public MensagemDTO adicionaPeca(Peca peca) {
 
-        if (pecaRepository.existsById(peca.getCodBarras())) {
+    	boolean pecaExiste = pecaRepository.existsById(peca.getCodBarras());
+        if (pecaExiste) {
             return new MensagemDTO(PECA_JA_CADASTRADA);
         }
 
@@ -42,8 +44,9 @@ public class PecaService implements IPecaService {
     }
 
     public MensagemDTO removePeca(Long codBarras) {
-
-        if (pecaRepository.existsById(codBarras)) {
+    	
+    	boolean pecaExiste = pecaRepository.existsById(codBarras);
+        if (pecaExiste) {
             pecaRepository.deleteById(codBarras);
             return new MensagemDTO(PECA_REMOVIDA_COM_SUCESSO);
         }
@@ -55,7 +58,8 @@ public class PecaService implements IPecaService {
 
         Optional<Peca> pecaConsultada = pecaRepository.findById(codBarras);
 
-        if (pecaConsultada.isPresent()) {
+        boolean pecaExiste = pecaConsultada.isPresent();
+        if (pecaExiste) {
 
             Peca pecaAlterada = pecaConsultada.get();
 
@@ -73,5 +77,18 @@ public class PecaService implements IPecaService {
 
         return new MensagemDTO(PECA_INEXISTENTE);
     }
+    
+    
+    public List<Peca> buscarPecaByNome(String nome) {
+		return pecaRepository.findByNomeLike(nome);
+	}
+
+	public List<Peca> buscarPecaByModelo(String modelo) {
+		return pecaRepository.findByModelo(modelo);
+	}
+
+	public List<Peca> buscarPecaByCategoria(Categoria categoria) {
+		return pecaRepository.findByCategoria(categoria);
+	}
 
 }

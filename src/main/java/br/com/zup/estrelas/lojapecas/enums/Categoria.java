@@ -2,7 +2,7 @@ package br.com.zup.estrelas.lojapecas.enums;
 
 public enum Categoria {
 
-    MANUTENCAO("manutencao"), PERFORMANCE("performance"), SOM("som"),
+    MOTOR("motor"), PERFORMANCE("performance"), SUSPENCAO("Suspencao"),
     FUNILARIA("funilaria"), ACESSORIOS("acessorios");
 
     private String value;

@@ -5,6 +5,7 @@ import java.util.List;
 import br.com.zup.estrelas.lojapecas.dto.AlteraPecaDTO;
 import br.com.zup.estrelas.lojapecas.dto.MensagemDTO;
 import br.com.zup.estrelas.lojapecas.entity.Peca;
+import br.com.zup.estrelas.lojapecas.enums.Categoria;
 
 public interface IPecaService {
 
@@ -17,5 +18,11 @@ public interface IPecaService {
     public MensagemDTO removePeca(Long codBarras);
 
     public MensagemDTO alteraPeca(Long codBarras, AlteraPecaDTO peca);
+    
+    public List<Peca> buscarPecaByNome(String nome);
+	
+	public List<Peca> buscarPecaByModelo(String modelo);
+	
+	public List<Peca> buscarPecaByCategoria(Categoria categoria);
 
 }
