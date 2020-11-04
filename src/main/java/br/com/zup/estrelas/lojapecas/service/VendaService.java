@@ -13,7 +13,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.zup.estrelas.lojapecas.dao.VendaDAO;
 import br.com.zup.estrelas.lojapecas.dto.AlteraPecaDTO;
 import br.com.zup.estrelas.lojapecas.dto.MensagemDTO;
 import br.com.zup.estrelas.lojapecas.dto.VendaDTO;
@@ -25,9 +24,6 @@ import br.com.zup.estrelas.lojapecas.repository.VendaRepository;
 @Service
 public class VendaService implements IVendaService {
 
-    @Autowired
-    VendaDAO vendaDao;
-    
     @Autowired
     VendaRepository vendaRespository;
 
