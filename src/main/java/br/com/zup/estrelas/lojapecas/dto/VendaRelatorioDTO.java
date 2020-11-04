@@ -1,5 +1,7 @@
 package br.com.zup.estrelas.lojapecas.dto;
 
+import java.time.LocalDate;
+
 public class VendaRelatorioDTO {
 
     private long codBarras;
@@ -9,6 +11,8 @@ public class VendaRelatorioDTO {
     private String nome;
 
     private Double valor;
+
+    private LocalDate dataVenda;
 
     public long getCodBarras() {
         return codBarras;
@@ -40,6 +44,14 @@ public class VendaRelatorioDTO {
 
     public void setValor(Double valor) {
         this.valor = valor;
+    }
+
+    public LocalDate getDataVenda() {
+        return dataVenda;
+    }
+
+    public void setDataVenda(LocalDate dataVenda) {
+        this.dataVenda = dataVenda;
     }
 
 }

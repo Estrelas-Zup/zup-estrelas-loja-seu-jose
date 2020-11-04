@@ -3,6 +3,8 @@ package br.com.zup.estrelas.lojapecas.service;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -17,12 +19,17 @@ import br.com.zup.estrelas.lojapecas.dto.MensagemDTO;
 import br.com.zup.estrelas.lojapecas.dto.VendaDTO;
 import br.com.zup.estrelas.lojapecas.dto.VendaRelatorioDTO;
 import br.com.zup.estrelas.lojapecas.entity.Peca;
+import br.com.zup.estrelas.lojapecas.entity.Venda;
+import br.com.zup.estrelas.lojapecas.repository.VendaRepository;
 
 @Service
 public class VendaService implements IVendaService {
 
     @Autowired
     VendaDAO vendaDao;
+    
+    @Autowired
+    VendaRepository vendaRespository;
 
     @Autowired
     PecaService pecaService;
@@ -59,7 +66,7 @@ public class VendaService implements IVendaService {
             arquivoRelatorio = new FileWriter(caminhoArquivo);
             arquivoRelatorio.append(String.format("Código\tNome\tQuantidade\tValor"));
 
-            List<VendaRelatorioDTO> relatorioDia = vendaDao.getVendas();
+            List<VendaRelatorioDTO> relatorioDia = this.listaVendas();
 
             Double valorTotal = (double) 0;
             for (VendaRelatorioDTO venda : relatorioDia) {
@@ -87,7 +94,29 @@ public class VendaService implements IVendaService {
 
     @Override
     public List<VendaRelatorioDTO> listaVendas() {
-        return this.vendaDao.getVendas();
+
+        List<Venda> vendas = (List<Venda>) this.vendaRespository.findAll();
+        List<VendaRelatorioDTO> vendasDto = new ArrayList<VendaRelatorioDTO>();
+
+//        this.vendaRespository.findAll().forEach(venda -> {
+//            VendaRelatorioDTO vendaDto = new VendaRelatorioDTO();
+//            BeanUtils.copyProperties(venda, vendaDto);
+//            Peca peca = venda.getPeca();
+//            vendaDto.setNome(peca.getNome());
+//            vendaDto.setCodBarras(peca.getCodBarras());
+//            vendasDto.add(vendaDto);
+//        });
+
+        for (Venda venda : vendas) {
+            VendaRelatorioDTO vendaDto = new VendaRelatorioDTO();
+            BeanUtils.copyProperties(venda, vendaDto);
+            Peca peca = venda.getPeca();
+            vendaDto.setNome(peca.getNome());
+            vendaDto.setCodBarras(peca.getCodBarras());
+            vendasDto.add(vendaDto);
+        }
+
+        return vendasDto;
     }
 
     private Optional<String> validaVenda(Peca peca, VendaDTO venda) {
@@ -103,15 +132,22 @@ public class VendaService implements IVendaService {
         return Optional.empty();
     }
 
-    private void armazenaVenda(Peca peca, VendaDTO venda) {
-        VendaRelatorioDTO vendaRelatorio = new VendaRelatorioDTO();
-        vendaRelatorio.setCodBarras(venda.getCodBarras());
-        vendaRelatorio.setNome(peca.getNome());
-        vendaRelatorio.setQuantidade(venda.getQuantidade());
+    private void armazenaVenda(Peca peca, VendaDTO vendaDto) {
+//        VendaRelatorioDTO vendaRelatorio = new VendaRelatorioDTO();
+//        vendaRelatorio.setCodBarras(venda.getCodBarras());
+//        vendaRelatorio.setNome(peca.getNome());
+//        vendaRelatorio.setQuantidade(venda.getQuantidade());
+//        vendaRelatorio.setValor(valorVenda);
+//        vendaDao.insereVenda(vendaRelatorio);
 
-        Double valorVenda = venda.getQuantidade() * peca.getPrecoVenda();
-        vendaRelatorio.setValor(valorVenda);
-        vendaDao.insereVenda(vendaRelatorio);
+        Venda vendaDb = new Venda();
+        vendaDb.setPeca(peca);
+        vendaDb.setQuantidade(vendaDto.getQuantidade());
+        Double valorVenda = vendaDto.getQuantidade() * peca.getPrecoVenda();
+        vendaDb.setValor(valorVenda);
+        vendaDb.setDataVenda(LocalDate.now());
+
+        vendaRespository.save(vendaDb);
     }
 
     private void alteraEstoque(Peca peca, VendaDTO venda) {
