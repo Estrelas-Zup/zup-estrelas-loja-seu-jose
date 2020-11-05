@@ -1,49 +1,26 @@
-package br.com.zup.estrelas.seujose.entity;
+package br.com.zup.estrelas.seujose.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Id;
 
 import br.com.zup.estrelas.seujose.enums.Categoria;
 
-@Entity
-public class Peca {
+public class AlteraPecaDTO {
 
-      @Id
-      @Column(name = "codigo_de_barras")
-      private Long codBarras;
-
-      @Column(nullable = false)
       private String nome;
 
-      @Column(name = "modelo_do_carro", nullable = false)
       private String modeloDoCarro;
 
-      @Column(nullable = false)
       private String fabricante;
 
-      @Column(name = "preco_custo", nullable = false)
       private Double precoDeCusto;
 
-      @Column(name = "preco_venda", nullable = false)
       private Double precoDeVenda;
 
-      @Column(name = "qtd_estoque", nullable = false)
-      private int qtdEmEstoque;
+      private int quantidadeEmEstoque;
 
-      @Column
       @Enumerated(EnumType.STRING)
       private Categoria categoria;
-
-      public Long getCodBarras() {
-            return codBarras;
-      }
-
-      public void setCodBarras(Long codBarras) {
-            this.codBarras = codBarras;
-      }
 
       public String getNome() {
             return nome;
@@ -86,11 +63,11 @@ public class Peca {
       }
 
       public int getQuantidadeEmEstoque() {
-            return qtdEmEstoque;
+            return quantidadeEmEstoque;
       }
 
       public void setQuantidadeEmEstoque(int quantidadeEmEstoque) {
-            this.qtdEmEstoque = quantidadeEmEstoque;
+            this.quantidadeEmEstoque = quantidadeEmEstoque;
       }
 
       public Categoria getCategoria() {

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.zup.estrelas.seujose.dto.AlteraPecaDTO;
 import br.com.zup.estrelas.seujose.dto.MensagemDTO;
-import br.com.zup.estrelas.seujose.dto.alteraPecaDTO;
 import br.com.zup.estrelas.seujose.entity.Peca;
 import br.com.zup.estrelas.seujose.service.PecaService;
 
@@ -46,7 +46,7 @@ public class PecaController {
       }
 
       @PutMapping(path = "/{codBarras}", produces = { MediaType.APPLICATION_JSON_VALUE })
-      public MensagemDTO alteraPeca(@PathVariable Long codBarras, @RequestBody alteraPecaDTO pecaDTO) {
+      public MensagemDTO alteraPeca(@PathVariable Long codBarras, @RequestBody AlteraPecaDTO pecaDTO) {
             return pecaService.alteraPeca(codBarras, pecaDTO);
       }
 

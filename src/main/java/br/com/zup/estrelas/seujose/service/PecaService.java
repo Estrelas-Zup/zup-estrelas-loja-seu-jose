@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.zup.estrelas.seujose.dto.MensagemDTO;
-import br.com.zup.estrelas.seujose.dto.alteraPecaDTO;
+import br.com.zup.estrelas.seujose.dto.AlteraPecaDTO;
 import br.com.zup.estrelas.seujose.entity.Peca;
 import br.com.zup.estrelas.seujose.repository.PecaRepository;
 
@@ -27,7 +27,7 @@ public class PecaService {
 
       public MensagemDTO adicionaPeca(Peca peca) {
 
-            if (repository.existsById(peca.getCodigoDeBarras())) {
+            if (repository.existsById(peca.getCodBarras())) {
                   return new MensagemDTO(PECA_JA_EXISTENTE);
             }
 
@@ -56,7 +56,7 @@ public class PecaService {
             return new MensagemDTO(PECA_REMOVIDA_COM_SUCESSO);
       }
 
-      public MensagemDTO alteraPeca(Long codBarras, alteraPecaDTO pecaDTO) {
+      public MensagemDTO alteraPeca(Long codBarras, AlteraPecaDTO pecaDTO) {
 
             Peca pecaPojo = new Peca();
 

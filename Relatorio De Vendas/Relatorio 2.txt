@@ -1,0 +1,2 @@
+CodBarras		nome		Quantidade		Valor111		Tapete Vermelho		0		117,60
+			 Valor Total: 117,60

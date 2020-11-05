@@ -1,0 +1,2 @@
+CodBarras		nome		Quantidade		Valor
+			 Valor Total: 0,00

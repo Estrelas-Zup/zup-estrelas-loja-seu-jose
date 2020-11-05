@@ -1,4 +1,4 @@
-package br.com.zup.estrelas.seujose.entity.categoria;
+package br.com.zup.estrelas.seujose.enums;
 
 public enum Categoria {
 
