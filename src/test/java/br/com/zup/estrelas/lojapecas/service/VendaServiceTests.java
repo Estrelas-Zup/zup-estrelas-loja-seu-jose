@@ -26,10 +26,8 @@ public class VendaServiceTests {
     @InjectMocks
     VendaService vendaService;
 
-    @Test
-    public void deveRealizarUmaVenda() {
-        Peca peca = new Peca();
-        peca.setCodBarras(111L);
+    private static void dadosDaVenda(Peca peca) {
+    	peca.setCodBarras(111L);
         peca.setFabricante("VW");
         peca.setModelo("Polo");
         peca.setNome("Volante");
@@ -37,6 +35,12 @@ public class VendaServiceTests {
         peca.setPrecoCusto(100.5);
         peca.setPrecoVenda(500.3);
         peca.setCategoria(Categoria.ACESSORIOS);
+    }
+    
+    @Test
+    public void deveRealizarUmaVenda() {
+        Peca peca = new Peca();
+        dadosDaVenda(peca); 
 
         VendaDTO vendaDto = new VendaDTO();
         vendaDto.setCodBarras(111L);
@@ -69,15 +73,8 @@ public class VendaServiceTests {
     @Test
     public void naoDeveRealizarUmaVendaCasoNaoHajaPecasSuficientes() {
         Peca peca = new Peca();
-        peca.setCodBarras(111L);
-        peca.setFabricante("VW");
-        peca.setModelo("Polo");
-        peca.setNome("Volante");
-        peca.setQtdEstoque(10);
-        peca.setPrecoCusto(100.5);
-        peca.setPrecoVenda(500.3);
-        peca.setCategoria(Categoria.ACESSORIOS);
-
+        dadosDaVenda(peca); 
+        
         VendaDTO vendaDto = new VendaDTO();
         vendaDto.setCodBarras(111L);
         vendaDto.setQuantidade(15);
