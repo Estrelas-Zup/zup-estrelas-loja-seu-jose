@@ -59,6 +59,7 @@ public class PecaService implements IPecaService {
 
             Peca pecaAlterada = pecaConsultada.get();
 
+            pecaAlterada.setCodBarras(codBarras);
             pecaAlterada.setCategoria(alteraPecaDTO.getCategoria());
             pecaAlterada.setFabricante(alteraPecaDTO.getFabricante());
             pecaAlterada.setModelo(alteraPecaDTO.getModelo());
