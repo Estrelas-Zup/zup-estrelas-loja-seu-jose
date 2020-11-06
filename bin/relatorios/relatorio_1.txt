@@ -1,0 +1,5 @@
+Código	Nome	Quantidade	Valor
+111	Tapete Vermelho	2	117,60
+111	Tapete Vermelho	1	58,80
+222	Tapete Azul	5	301,50
+			 Valor Total: 477,90
