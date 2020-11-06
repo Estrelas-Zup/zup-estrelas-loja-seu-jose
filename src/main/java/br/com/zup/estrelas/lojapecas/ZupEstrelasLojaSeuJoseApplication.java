@@ -2,7 +2,7 @@ package br.com.zup.estrelas.lojapecas;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+//Teste
 @SpringBootApplication
 public class ZupEstrelasLojaSeuJoseApplication {
 
