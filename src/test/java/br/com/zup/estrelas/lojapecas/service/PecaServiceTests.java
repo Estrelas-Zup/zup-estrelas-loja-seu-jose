@@ -61,22 +61,14 @@ public class PecaServiceTests {
 	@Test
 	public void deveAlterarPecaComSucesso() {
 		AlteraPecaDTO alteraPecaDTO = new AlteraPecaDTO();
-		
 		Peca peca = montarObjetoPeca();
+		BeanUtils.copyProperties(peca, alteraPecaDTO);
+		
 		Optional<Peca> pecaOptional = Optional.of(peca);	
-			
-		alteraPecaDTO.setFabricante("VW");
-		alteraPecaDTO.setModelo("Gol");
-		alteraPecaDTO.setNome("Farol de milha");
-		alteraPecaDTO.setQtdEstoque(10);
-		alteraPecaDTO.setPrecoCusto(250.0);
-		alteraPecaDTO.setPrecoVenda(480.0);
-		alteraPecaDTO.setCategoria(Categoria.ACESSORIOS);
+		
+		alteraPecaDTO.setModelo("Golf");
 		
 		Mockito.when(pecaRepository.findById(peca.getCodBarras())).thenReturn(pecaOptional);
-		
-		Mockito.when(pecaService.alteraPeca(peca.getCodBarras(), alteraPecaDTO))
-		.thenReturn(new MensagemDTO(PECA_ALTERADA_COM_SUCESSO));
 		
 		MensagemDTO mensagemRetornada = pecaService.alteraPeca(peca.getCodBarras(), alteraPecaDTO);
 		MensagemDTO mensagemEsperada = new MensagemDTO(PECA_ALTERADA_COM_SUCESSO);
