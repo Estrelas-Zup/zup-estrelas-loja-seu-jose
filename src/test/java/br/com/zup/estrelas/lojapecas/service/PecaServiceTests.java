@@ -17,6 +17,7 @@ import br.com.zup.estrelas.lojapecas.dto.MensagemDTO;
 import br.com.zup.estrelas.lojapecas.entity.Peca;
 import br.com.zup.estrelas.lojapecas.enums.Categoria;
 import br.com.zup.estrelas.lojapecas.repository.PecaRepository;
+import net.bytebuddy.pool.TypePool.Empty;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PecaServiceTests {
@@ -74,6 +75,19 @@ public class PecaServiceTests {
 		MensagemDTO mensagemEsperada = new MensagemDTO(PECA_ALTERADA_COM_SUCESSO);
 		
 		Assert.assertEquals("A mensagem retornada deve ser indicativo de peca alterada com sucesso", mensagemEsperada, mensagemRetornada);
+	}
+	
+	@Test
+	public void naoDeveAlterarPecaInexistente() {
+		AlteraPecaDTO alteraPecaDTO = new AlteraPecaDTO();
+		
+		long codBarras = 1;
+		Mockito.when(pecaRepository.findById(codBarras)).thenReturn(Optional.empty());
+		
+		MensagemDTO mensagemRetornada = pecaService.alteraPeca(codBarras, alteraPecaDTO);
+		MensagemDTO mensagemEsperada = new MensagemDTO(PECA_INEXISTENTE);
+		
+		Assert.assertEquals("A mensagem retornada deve ser indicativo de peca nao alterada", mensagemEsperada, mensagemRetornada);
 	}
 	
 	@Test
