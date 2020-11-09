@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.BeanUtils;
 
 import br.com.zup.estrelas.lojapecas.dto.AlteraPecaDTO;
 import br.com.zup.estrelas.lojapecas.dto.MensagemDTO;
@@ -50,9 +51,10 @@ public class PecaServiceTests {
     public void deveCadastrarPecaComSucesso() {
     	
     	Peca peca = criaUmaPeca();
+    	long codigoBarrasPeca = peca.getCodBarras();
         
         
-        Mockito.when(pecaRepository.existsById(111L)).thenReturn(false);
+        Mockito.when(pecaRepository.existsById(codigoBarrasPeca)).thenReturn(false);
         
         MensagemDTO mensagemRetornada = pecaService.adicionaPeca(peca);
         MensagemDTO mensagemEsperada = new MensagemDTO(CADASTRO_REALIZADO_COM_SUCESSO);
@@ -64,9 +66,9 @@ public class PecaServiceTests {
     public void naoDeveCadastrarPecaExistente() {
     	
     	Peca peca = criaUmaPeca();
+    	long codigoBarrasPeca = peca.getCodBarras();
         
-        
-        Mockito.when(pecaRepository.existsById(111L)).thenReturn(true);
+        Mockito.when(pecaRepository.existsById(codigoBarrasPeca)).thenReturn(true);
         
         MensagemDTO mensagemRetornada = pecaService.adicionaPeca(peca);
         MensagemDTO mensagemEsperada = new MensagemDTO(PECA_JA_CADASTRADA);
@@ -80,6 +82,7 @@ public class PecaServiceTests {
     	Peca peca = criaUmaPeca();
         
         AlteraPecaDTO novaPeca = new AlteraPecaDTO();
+        BeanUtils.copyProperties(peca, novaPeca);
         novaPeca.setModelo("Fusca");
         
         Optional<Peca> pecaAlterada = Optional.of(peca);
@@ -89,7 +92,7 @@ public class PecaServiceTests {
         MensagemDTO mensagemRetornada = pecaService.alteraPeca(111L, novaPeca);
         MensagemDTO mensagemEsperada = new MensagemDTO(PECA_ALTERADA_COM_SUCESSO);
         
-        Assert.assertEquals("Não deve cadastrar a peca", mensagemEsperada, mensagemRetornada);
+        Assert.assertEquals("Deve atualizar a peca com sucesso", mensagemEsperada, mensagemRetornada);
     }
     
     @Test
@@ -104,7 +107,7 @@ public class PecaServiceTests {
         MensagemDTO mensagemRetornada = pecaService.alteraPeca(111L, novaPeca);
         MensagemDTO mensagemEsperada = new MensagemDTO(PECA_INEXISTENTE);
         
-        Assert.assertEquals("Não deve cadastrar a peca", mensagemEsperada, mensagemRetornada);
+        Assert.assertEquals("Não existe peça para ser atualizada", mensagemEsperada, mensagemRetornada);
     }
     
     
